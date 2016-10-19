@@ -65,6 +65,7 @@ class Menu(db.Model):
     __tablename__ = 'menus'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
+    user = db.Column(db.Integer, default=0)
     types = db.relationship('ArticleType', backref='menu', lazy='dynamic')
     order = db.Column(db.Integer, default=0, nullable=False)
 
@@ -72,18 +73,6 @@ class Menu(db.Model):
         for menu in Menu.query.order_by(Menu.order).offset(self.order).all():
             menu.order -= 1
             db.session.add(menu)
-
-    @staticmethod
-    def insert_menus():
-        menus = [u'Web开发', u'数据库', u'网络技术', u'爱生活，爱自己',
-                 u'Linux世界', u'开发语言']
-        for name in menus:
-            menu = Menu(name=name)
-            db.session.add(menu)
-            db.session.commit()
-            menu.order = menu.id
-            db.session.add(menu)
-            db.session.commit()
 
     @staticmethod
     def return_menus():
@@ -136,24 +125,10 @@ class ArticleType(db.Model):
 
     @staticmethod
     def insert_system_articleType():
-        articleType = ArticleType(name=u'未分类',
-                                  introduction=u'系统默认分类，不可删除。',
-                                  setting=ArticleTypeSetting.query.filter_by(protected=True).first()
-                                  )
-        db.session.add(articleType)
-        db.session.commit()
-
-    @staticmethod
-    def insert_articleTypes():
-        articleTypes = ['Python', 'Java', 'JavaScript', 'Django',
-                        'CentOS', 'Ubuntu', 'MySQL', 'Redis',
-                        u'Linux成长之路', u'Linux运维实战', u'其它',
-                        u'思科网络技术', u'生活那些事', u'学校那些事',
-                        u'感情那些事', 'Flask']
-        for name in articleTypes:
-            articleType = ArticleType(name=name,
-                                      setting=ArticleTypeSetting(name=name))
-            db.session.add(articleType)
+        article_type = ArticleType(name=u'未分类',
+                                   introduction=u'系统默认分类，不可删除。',
+                                   setting=ArticleTypeSetting.query.filter_by(protected=True).first())
+        db.session.add(article_type)
         db.session.commit()
 
     @property
