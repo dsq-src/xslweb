@@ -39,6 +39,7 @@ def upgrade():
     op.create_table('menus',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=64), nullable=True),
+    sa.Column('user', sa.Integer(), nullable=False),
     sa.Column('order', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
